@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { deleteContact } from '../../redux/contacts/contacts-operations';
@@ -9,31 +9,34 @@ import s from './ContactList.module.css';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-class ContactList extends Component {
-  render() {
-    const { contacts, onDeleteContacts } = this.props;
+export default function ContactList() {
+  const contacts = useSelector(getVisibleContacts);
+  const dispatch = useDispatch();
 
-    return (
-      <>
-        <ul className={s.ContactList}>
-          {contacts.length ? (
-            contacts.map(({ id, name, number }) => (
-              <li key={id} id={id} className={s.ContactList__item}>
-                <p className={s.ContactList__text}>{name}:</p>
-                <p className={s.ContactList__text}>{number}</p>
+  const onDeleteContacts = useCallback(contactId => dispatch(deleteContact(contactId)), [
+    dispatch,
+  ]);
 
-                <Button variant="outline-dark" onClick={() => onDeleteContacts(id)}>
-                  Delete
-                </Button>
-              </li>
-            ))
-          ) : (
-            <p>No contacts found</p>
-          )}
-        </ul>
-      </>
-    );
-  }
+  return (
+    <>
+      <ul className={s.ContactList}>
+        {contacts.length ? (
+          contacts.map(({ id, name, number }) => (
+            <li key={id} id={id} className={s.ContactList__item}>
+              <p className={s.ContactList__text}>{name}:</p>
+              <p className={s.ContactList__text}>{number}</p>
+
+              <Button variant="outline-dark" onClick={() => onDeleteContacts(id)}>
+                Delete
+              </Button>
+            </li>
+          ))
+        ) : (
+          <p>No contacts found</p>
+        )}
+      </ul>
+    </>
+  );
 }
 
 ContactList.propTypes = {
@@ -44,15 +47,4 @@ ContactList.propTypes = {
       number: PropTypes.string.isRequired,
     }).isRequired,
   ),
-  onDeleteContacts: PropTypes.func.isRequired,
 };
-
-const mapStateToProps = state => ({
-  contacts: getVisibleContacts(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  onDeleteContacts: contactId => dispatch(deleteContact(contactId)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);

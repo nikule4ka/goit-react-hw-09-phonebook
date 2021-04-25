@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import backHeader from '../images/backHeader.png';
 
 import Navigation from './Navigation';
@@ -20,17 +20,19 @@ const styles = {
   },
 };
 
-const AppBar = ({ isAuthenticated }) => {
+export default function AppBar() {
+  const isLoggedIn = useSelector(getIsAuthenticated);
+
   return (
     <header style={styles.header}>
       <Navigation />
-      {isAuthenticated ? <UserMenu /> : <AuthNav />}
+      {isLoggedIn ? <UserMenu /> : <AuthNav />}
     </header>
   );
-};
+}
 
-const mapStateToProps = state => ({
-  isAuthenticated: getIsAuthenticated(state),
-});
+// const mapStateToProps = state => ({
+//   isAuthenticated: getIsAuthenticated(state),
+// });
 
-export default connect(mapStateToProps)(AppBar);
+// export default connect(mapStateToProps)(AppBar);

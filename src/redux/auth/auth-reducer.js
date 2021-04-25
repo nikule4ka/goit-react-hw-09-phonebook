@@ -24,6 +24,7 @@ const token = createReducer(null, {
   [registerSuccess]: (_, { payload }) => payload.token,
   [loginSuccess]: (_, { payload }) => payload.token,
   [logOutSuccess]: () => null,
+  [getCurrentUserError]: () => null,
 });
 
 const error = createReducer(null, {
